@@ -1,3 +1,35 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1772757004
+::res://::1772845590
 icon.svg::CompressedTexture2D::6599780404146579180::1772756992::1772757006::1::::<><><>0<>0<>ba2e98af9e9fa5eee94519ce863d92ad<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
+::res://assets/::1772845243
+::res://assets/audio/::1772765807
+::res://assets/audio/music/::1772765833
+placeholder.txt::TextFile::-1::1772765828::0::1::::<><><>0<>0<><>::
+::res://assets/audio/sfx/::1772765836
+placeholder.txt::TextFile::-1::1772765828::0::1::::<><><>0<>0<><>::
+::res://assets/images/::1772765787
+::res://assets/images/other/::1772765840
+placeholder.txt::TextFile::-1::1772765828::0::1::::<><><>0<>0<><>::
+::res://assets/images/spritesheets/::1772844994
+::res://assets/images/spritesheets/player_cat/::1772847707
+climbing.png::CompressedTexture2D::6859391966536329629::1772844820::1772845354::1::::<><><>0<>0<>1b8d956dc7287b28e8fdb0691b8d7f31<>res://.godot/imported/climbing.png-7a526cd326152cbb0135915405290e83.ctex::
+idle.png::CompressedTexture2D::2707332224617859184::1772847707::1772847709::1::::<><><>0<>0<>5812a6319c4493a98e34521f059effbd<>res://.godot/imported/idle.png-fbc4c589934c44c86d688878b41daea5.ctex::
+idle_2.png::CompressedTexture2D::8407654952319212664::1772844820::1772845354::1::::<><><>0<>0<>02a42dfcb5bde40f80878603a6ae7e6d<>res://.godot/imported/idle_2.png-c57a27e6e3f50bd7e218503278fad9f9.ctex::
+jumping.png::CompressedTexture2D::4210723344049567274::1772844820::1772845354::1::::<><><>0<>0<>fd3f02321e58444a2f27492df1acd98f<>res://.godot/imported/jumping.png-493003ce71303f94bd0ead794c5cc88c.ctex::
+running.png::CompressedTexture2D::4346141772873751143::1772844820::1772845354::1::::<><><>0<>0<>1603f09ac156da4b2f0ee779bcd656f6<>res://.godot/imported/running.png-139c573f94c3542974b039ae5ec0fdbc.ctex::
+::res://assets/images/tilesets/::1772845354
+background_color.png::CompressedTexture2D::608284713645808412::1772844820::1772845354::1::::<><><>0<>0<>0efe2f3aefeb9e7ce88c57b224fd66ea<>res://.godot/imported/background_color.png-745dc6cc9d503c068726a5deca4a6bf7.ctex::
+collision.svg::CompressedTexture2D::1533667773256361448::1772844820::1772845354::1::::<><><>0<>0<>87ad45d81bf1c0692dd40d0b3fb7c516<>res://.godot/imported/collision.svg-793453e9e7a84150a22483ec477bd797.ctex::
+collision_overlay.svg::CompressedTexture2D::451603600431334504::1772844820::1772845354::1::::<><><>0<>0<>270572d42a8d197356c5e6cac2c1ed0c<>res://.godot/imported/collision_overlay.svg-1db71c39a6e7663e926406e20787c7f9.ctex::
+::res://assets/unused assets/::1772845354
+Cat Climbing1.png::CompressedTexture2D::1809484551354410470::1772844820::1772845354::1::::<><><>0<>0<>07b875f77b9afcd7f67c92d7baeb448a<>res://.godot/imported/Cat Climbing1.png-caf6a3c7ac7da23f85b264acd4c703bd.ctex::
+Cat Climbing2.png::CompressedTexture2D::7592959482077657614::1772844820::1772845354::1::::<><><>0<>0<>949be76c3eb0ba1864482ca12dbc982e<>res://.godot/imported/Cat Climbing2.png-c64f128e18e6450495b21d3f7c375517.ctex::
+Cat Climbing3.png::CompressedTexture2D::6357034193493731488::1772844820::1772845354::1::::<><><>0<>0<>776b581ac280d7189122f9e56b6853e4<>res://.godot/imported/Cat Climbing3.png-0806212aeec81f6936326ee367642cb2.ctex::
+Cat Climbing4.png::CompressedTexture2D::2006253779984430471::1772844820::1772845354::1::::<><><>0<>0<>e70181cdc6b60a4da3abfe134a065241<>res://.godot/imported/Cat Climbing4.png-e185e14e4b530c02bce09b78ac355130.ctex::
+character_body_2d.tscn::PackedScene::216098170030787172::1772844820::0::1::::<><><>0<>0<><>::uid://bycl6bey1imp6::::res://character_body_2d.gd<>uid://ci4slpjml7uv6::::res://Cat-idle-spritesheet.png<>uid://ttbs1bstpyit::::res://animated_sprite_2d.gd
+node_2d.tscn::PackedScene::5092543218647723544::1772844820::0::1::::<><><>0<>0<><>::uid://chq7r33bt1iyo::::res://Dune Labs Forest Scene.svg<>uid://ck8gte0wx3dvk::::res://Screenshot 2026-03-04 034218.png<>uid://cl8c74bnvng6f::::res://Dune Labs Forest Scene Overlay.svg<>uid://ci4slpjml7uv6::::res://Cat-idle-spritesheet.png<>uid://bycl6bey1imp6::::res://character_body_2d.gd<>uid://c3ch5e6yd6ci7::::res://Cat Running Spritesheet.png<>uid://ttbs1bstpyit::::res://animated_sprite_2d.gd<>uid://sddbx27p06rt::::res://node_2d.gdshader<>uid://cipkqflss3fqy::::res://overlay.gd
+Tiles and stuff.tscn::PackedScene::7474033460987304118::1772844821::0::1::::<><><>0<>0<><>::uid://ck8gte0wx3dvk::::res://Screenshot 2026-03-04 034218.png<>uid://chq7r33bt1iyo::::res://Dune Labs Forest Scene.svg<>uid://cl8c74bnvng6f::::res://Dune Labs Forest Scene Overlay.svg<>uid://bycl6bey1imp6::::res://character_body_2d.gd<>uid://dny7ceqdfyu0e::::res://Cat Climbing1.png<>uid://ci4slpjml7uv6::::res://Cat-idle-spritesheet.png<>uid://c3ch5e6yd6ci7::::res://Cat Running Spritesheet.png<>uid://ex7k8cx3p4o8::::res://Cat Climbing2.png<>uid://cla14bhc4vlo1::::res://Cat Climbing3.png<>uid://ttbs1bstpyit::::res://animated_sprite_2d.gd<>uid://dugx8k1m71woo::::res://Cat Climbing4.png<>uid://d2j1sbksur0ci::::res://Cat Jumping Animation-Sheet.png
+::res://scenes/::1772846665
+game.tscn::PackedScene::8183729580308332318::1772845415::0::1::::<><><>0<>0<><>::
+player.tscn::PackedScene::6956040138156368862::1772846665::0::1::::<><><>0<>0<><>::uid://betpmpk4inkjo::::res://assets/images/spritesheets/player_cat/idle.png
+::res://scripts/::1772844640
