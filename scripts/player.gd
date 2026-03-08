@@ -1,25 +1,36 @@
 extends CharacterBody2D
 
 
-const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
+const speed = 300.0
+const gravity = 1000
+const jump_power = 400.0
 
+var dir_x = 0
+
+func animate():
+#	flip the sprite if going left ony if we are moving		
+	$Sprite2D.flip_h = dir_x < 0 if dir_x != 0 else $Sprite2D.flip_h
+	
+#	change animation based on what the player is doing
+	#if dir_x:
+		#$AnimationPlayer
+	
+func get_input():
+	#	jump stuff
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = -jump_power
+
+#	update dir
+	dir_x = Input.get_axis("left", "right")
+
+func apply_gravity(delta):
+	#	gravity
+	if not is_on_floor():
+		velocity.y += gravity * delta
 
 func _physics_process(delta: float) -> void:
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction := Input.get_axis("ui_left", "ui_right")
-	if direction:
-		velocity.x = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-
-	move_and_slide()
+	apply_gravity(delta)
+	get_input()
+	velocity.x = dir_x * speed #update x vel
+	animate() #animate based on state
+	move_and_slide() #update position and adds delta
