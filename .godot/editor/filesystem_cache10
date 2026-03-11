@@ -1,5 +1,5 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1772942607
+::res://::1773210280
 icon.svg::CompressedTexture2D::6599780404146579180::1772756992::1772757006::1::::<><><>0<>0<>ba2e98af9e9fa5eee94519ce863d92ad<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 ::res://assets/::1772845243
 ::res://assets/audio/::1772765807
@@ -28,8 +28,8 @@ Cat Climbing4.png::CompressedTexture2D::2006253779984430471::1772844820::1772845
 character_body_2d.tscn::PackedScene::216098170030787172::1772844820::0::1::::<><><>0<>0<><>::uid://bycl6bey1imp6::::res://character_body_2d.gd<>uid://ci4slpjml7uv6::::res://Cat-idle-spritesheet.png<>uid://ttbs1bstpyit::::res://animated_sprite_2d.gd
 node_2d.tscn::PackedScene::5092543218647723544::1772844820::0::1::::<><><>0<>0<><>::uid://chq7r33bt1iyo::::res://Dune Labs Forest Scene.svg<>uid://ck8gte0wx3dvk::::res://Screenshot 2026-03-04 034218.png<>uid://cl8c74bnvng6f::::res://Dune Labs Forest Scene Overlay.svg<>uid://ci4slpjml7uv6::::res://Cat-idle-spritesheet.png<>uid://bycl6bey1imp6::::res://character_body_2d.gd<>uid://c3ch5e6yd6ci7::::res://Cat Running Spritesheet.png<>uid://ttbs1bstpyit::::res://animated_sprite_2d.gd<>uid://sddbx27p06rt::::res://node_2d.gdshader<>uid://cipkqflss3fqy::::res://overlay.gd
 Tiles and stuff.tscn::PackedScene::7474033460987304118::1772844821::0::1::::<><><>0<>0<><>::uid://ck8gte0wx3dvk::::res://Screenshot 2026-03-04 034218.png<>uid://chq7r33bt1iyo::::res://Dune Labs Forest Scene.svg<>uid://cl8c74bnvng6f::::res://Dune Labs Forest Scene Overlay.svg<>uid://bycl6bey1imp6::::res://character_body_2d.gd<>uid://dny7ceqdfyu0e::::res://Cat Climbing1.png<>uid://ci4slpjml7uv6::::res://Cat-idle-spritesheet.png<>uid://c3ch5e6yd6ci7::::res://Cat Running Spritesheet.png<>uid://ex7k8cx3p4o8::::res://Cat Climbing2.png<>uid://cla14bhc4vlo1::::res://Cat Climbing3.png<>uid://ttbs1bstpyit::::res://animated_sprite_2d.gd<>uid://dugx8k1m71woo::::res://Cat Climbing4.png<>uid://d2j1sbksur0ci::::res://Cat Jumping Animation-Sheet.png
-::res://scenes/::1772928939
-game.tscn::PackedScene::8183729580308332318::1772924202::0::1::::<><><>0<>0<><>::uid://c6ds72j6jakd7::::res://scenes/player.tscn<>uid://v36jwqnbnsw3::::res://assets/images/tilesets/collision.svg
-player.tscn::PackedScene::6956040138156368862::1772928939::0::1::::<><><>0<>0<><>::uid://betpmpk4inkjo::::res://assets/images/spritesheets/player_cat/idle.png<>uid://do62elngv6cn7::::res://scripts/player.gd
-::res://scripts/::1772925408
-player.gd::GDScript::8207548672509129514::1772925408::0::1::::<>CharacterBody2D<><>0<>0<><>::
+::res://scenes/::1773118724
+game.tscn::PackedScene::8183729580308332318::1773118607::0::1::::<><><>0<>0<><>::uid://iwwmitxbb70s::::res://assets/images/tilesets/background_color.png<>uid://c6ds72j6jakd7::::res://scenes/player.tscn<>uid://v36jwqnbnsw3::::res://assets/images/tilesets/collision.svg<>uid://go030gog3iyy::::res://assets/images/tilesets/collision_overlay.svg
+player.tscn::PackedScene::6956040138156368862::1773118724::0::1::::<><><>0<>0<><>::uid://betpmpk4inkjo::::res://assets/images/spritesheets/player_cat/idle.png<>uid://do62elngv6cn7::::res://scripts/player.gd<>uid://b08x87aqlihew::::res://assets/images/spritesheets/player_cat/jumping.png<>uid://b26kk47chcipj::::res://assets/images/spritesheets/player_cat/running.png
+::res://scripts/::1773119363
+player.gd::GDScript::8207548672509129514::1773119363::0::1::::<>CharacterBody2D<><>0<>0<><>::

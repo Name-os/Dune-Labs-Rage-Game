@@ -1,8 +1,8 @@
 TileMapLayer
+AnimatedSprite2D
 CollisionShape2D
 Camera2D
 Sprite2D
 AnimationPlayer
-AnimatedSprite2D
 CharacterBody2D
 Node2D
