@@ -1,0 +1,14 @@
+Sprite2D
+AnimatedSprite2D
+PointLight2D
+DirectionalLight2D
+Node2D
+CharacterBody2D
+CollisionShape2D
+Area2D
+TileMapLayer
+ShapeCast2D
+RayCast2D
+Timer
+Camera2D
+AnimationPlayer
