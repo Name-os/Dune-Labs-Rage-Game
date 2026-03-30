@@ -68,9 +68,11 @@ func update_timers():
 		$timers/sit.start()
 		$timers/sleep.start()
 
-func new_input(delta):
+func new_input():
 	jump_mod = 1
 	gravity_mod = 1
+	if not is_on_floor():
+		crouching = false
 	if wall_jump_cooldown <= 0:
 		climbing = false
 
@@ -82,22 +84,19 @@ func new_input(delta):
 		"jump"  : Input.is_action_just_pressed("jump")
 	}
 	
-	if input_map["climb"] and is_on_wall() and wall_jump_cooldown <= 0:
+	if input_map["climb"] and $body/ShapeCast2D.is_colliding()and wall_jump_cooldown <= 0:
 		climbing = true
 		speed_mod = mod_values["climb"]
 		
-		if input_map["jump"] and dir.x: # wall jump away from wall
-			velocity.x = -dir.x * speed
-			velocity.y = -jump_power
-			climbing = false
-			wall_jump_cooldown = 15
-		elif input_map["jump"]: # wall jump straight up
+		if input_map["jump"]:
+			if dir.x:
+				velocity.x = -dir.x * speed
+				climbing = false	
 			velocity.y = -jump_power
 			wall_jump_cooldown = 15
-		elif input_map["up"]: # climb up
-			velocity.y = -speed * speed_mod * 0.5
-		elif input_map["down"]: # climb down
-			velocity.y = speed * speed_mod
+		elif dir.y:
+			velocity.y = dir.y * speed * speed_mod * (0.5 if dir.y < 0 else 1.0)
+
 		else: # stick to wall
 			velocity.y = 0 #slide idk what you want it to be
 			
@@ -116,13 +115,15 @@ func update_vel(delta):
 	velocity.x = dir.x * speed * speed_mod
 
 func _physics_process(delta: float) -> void:
-	new_input(delta)
+	new_input()
 	update_timers()
 	frames_since_on_floor = 0 if is_on_floor() else frames_since_on_floor+1
 	toggle_crouch()
 	animate()
 	update_vel(delta)
 	move_and_slide()
+	position = Vector2i(round(position/4))*4 #make movement pixel perfect
+
 	
 	if wall_jump_cooldown > 0:
 		wall_jump_cooldown -= 1
