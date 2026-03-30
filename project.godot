@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="Dune Labs Rage Game"
+config/name="Dune Labs Platformer Game"
 run/main_scene="uid://doui3ide5warm"
 config/features=PackedStringArray("4.6", "Forward Plus")
 

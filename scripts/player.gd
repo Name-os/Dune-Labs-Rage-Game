@@ -65,19 +65,16 @@ func toggle_crouch(): #could make more clean
 	$head.position.x = (-1.0 if dir.x < 1 else 3.0) if dir.x != 0 else $head.position.x
 
 func update_timers():
-	if dir:
+	if not dir and not climbing:
 		$timers/sit.start()
 		$timers/sleep.start()
 
-func new_input():
+func new_input(delta):
 	jump_mod = 1
 	gravity_mod = 1
 	climbing = false
 
 	#Climbing button + up or down = up or down movement
-	#Climbing button + jump + no directional input  that is left or right = Jump up while on a wall
-	#Climbing button + jump + directional input = Jump in the direction of the input
-	#Climbing button + on wall = Grip onto wall
 	#No climbing button + walking into wall = slide down wall at constant speed
 	#No climbing button + not walking into wall = freefall
 
@@ -95,25 +92,20 @@ func new_input():
 		climbing = true
 		speed_mod = mod_values["climb"]
 		
+		#jumping on wall
 		if input_map["jump"] and not dir.x:
 			jump_mod = 1.5
 			velocity.y = -jump_power * jump_mod
-			
-
-
-##		jump off wall
-		#elif input_map["jump"] and dir.x:
-			#climbing = false
-			#velocity.y = -jump_power
-##		going up or down
-		#elif not input_map["jump"] and dir.y:
-			#velocity.y += dir.y * speed * speed_mod
+		#going up and down
+		elif input_map["up"] or input_map["down"]:
+			velocity.y += dir.y * speed * delta
 	elif input_map["jump"] and (is_on_floor() or frames_since_on_floor <= coyote_time_limit):
 		velocity.y = -jump_power
 	elif input_map["down"] and is_on_floor():
 		crouching = true	
 	elif not $head/ShapeCast2D.is_colliding(): #not allow uncrouch if head is clipped
 		crouching = false
+		
 		
 func get_input():
 	jump_mod = 1
@@ -143,24 +135,25 @@ func update_vel(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta * gravity_mod
 
-	if climbing:
+	#need to update vel after gravity for climbing so thats why it is not in get_input
+	if climbing and velocity.y == -jump_power * jump_mod:
 		if velocity.y != 0:
 			velocity.y += gravity * delta
 			if velocity.y > 0:
 				velocity.y = 0
 
 	# X axis 
-	velocity.x = dir.x * speed
+	velocity.x = dir.x * speed * speed_mod
 
 func _physics_process(delta: float) -> void:
-	new_input()
+	new_input(delta)
 	update_timers()
 	frames_since_on_floor = 0 if is_on_floor() or climbing else frames_since_on_floor+1 #update frames since on floor
 	toggle_crouch()
 	animate() #animate based on state
 	update_vel(delta) #update the player vel
 	move_and_slide() #update position and adds delta
-	position = Vector2i(round(position/4))*4 #make movement pixel perfect
+	#position = Vector2i(round(position/4))*4 #make movement pixel perfect, causing issues
 	
 	
 #camera values:

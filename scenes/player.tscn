@@ -461,7 +461,7 @@ size = Vector2(14, 8)
 size = Vector2(10, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_smehm"]
-size = Vector2(10, 3)
+size = Vector2(9.9, 3)
 
 [node name="player" type="CharacterBody2D" unique_id=2019189749 groups=["player"]]
 scale = Vector2(2, 2)
