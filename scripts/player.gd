@@ -14,8 +14,6 @@ var jump_mod      := 1.0
 var gravity_mod   := 1.0
 
 #state
-#var current_state
-#enum states {idle, running, jumping, crouching, climbing}
 var crouching     := false
 var climbing      := false
 var allow_input   := true
@@ -24,9 +22,12 @@ var allow_input   := true
 var frames_since_on_floor := 0
 var coyote_time_limit     := 4
 
+#wall jump cooldown
+var wall_jump_cooldown := 0
+
 var mod_values = {
 	"crouching" : 0.6,
-	"climb"     : 1.5,
+	"climb"     : 1.5
 }
 
 func check_bound(lower, upper, num, equal=false):
@@ -35,7 +36,6 @@ func check_bound(lower, upper, num, equal=false):
 func animate():
 	var animation = ""
 	
-#	flip the sprite if going left ony if we are moving		
 	$AnimatedSprite2D.flip_h = dir.x < 0 if dir.x != 0 else $AnimatedSprite2D.flip_h
 	
 	if $timers/sleep.is_stopped():
@@ -54,14 +54,13 @@ func animate():
 		
 	$AnimatedSprite2D.play(animation)
 
-func toggle_crouch(): #could make more clean
+func toggle_crouch():
 	if crouching:
 		$head.disabled = true
 		speed_mod = mod_values["crouching"]
 	else:
 		$head.disabled = false
 		speed_mod = 1
-#	change head hit box dir based on dir
 	$head.position.x = (-1.0 if dir.x < 1 else 3.0) if dir.x != 0 else $head.position.x
 
 func update_timers():
@@ -72,90 +71,63 @@ func update_timers():
 func new_input(delta):
 	jump_mod = 1
 	gravity_mod = 1
-	climbing = false
+	if wall_jump_cooldown <= 0:
+		climbing = false
 
-	#Climbing button + up or down = up or down movement
-	#No climbing button + walking into wall = slide down wall at constant speed
-	#No climbing button + not walking into wall = freefall
-
-	#if not allow_input:
-		#return
-		
 	dir = Input.get_vector("left","right","up","down")
 	var input_map = {
-		"up"     : Input.is_action_pressed("up"),
-		"down"   : Input.is_action_pressed("down"),
-		"climb"  : Input.is_action_pressed("climb"),
-		"jump"   : Input.is_action_just_pressed("jump")
+		"up"    : Input.is_action_pressed("up"),
+		"down"  : Input.is_action_pressed("down"),
+		"climb" : Input.is_action_pressed("climb"),
+		"jump"  : Input.is_action_just_pressed("jump")
 	}
-	if input_map["climb"] and is_on_wall():
+	
+	if input_map["climb"] and is_on_wall() and wall_jump_cooldown <= 0:
 		climbing = true
 		speed_mod = mod_values["climb"]
 		
-		#jumping on wall
-		if input_map["jump"] and not dir.x:
-			jump_mod = 1.5
-			velocity.y = -jump_power * jump_mod
-		#going up and down
-		elif input_map["up"] or input_map["down"]:
-			velocity.y += dir.y * speed * delta
+		if input_map["jump"] and dir.x: # wall jump away from wall
+			velocity.x = -dir.x * speed
+			velocity.y = -jump_power
+			climbing = false
+			wall_jump_cooldown = 15
+		elif input_map["jump"]: # wall jump straight up
+			velocity.y = -jump_power
+			wall_jump_cooldown = 15
+		elif input_map["up"]: # climb up
+			velocity.y = -speed * speed_mod * 0.5
+		elif input_map["down"]: # climb down
+			velocity.y = speed * speed_mod
+		else: # stick to wall
+			velocity.y = 0 #slide idk what you want it to be
+			
 	elif input_map["jump"] and (is_on_floor() or frames_since_on_floor <= coyote_time_limit):
 		velocity.y = -jump_power
 	elif input_map["down"] and is_on_floor():
 		crouching = true	
-	elif not $head/ShapeCast2D.is_colliding(): #not allow uncrouch if head is clipped
+	elif not $head/ShapeCast2D.is_colliding():
 		crouching = false
-		
-		
-func get_input():
-	jump_mod = 1
-	climbing = false
-	
-	if allow_input:
-		dir.x = Input.get_axis("left", "right")
-		var input_map = {
-			"up"     : Input.is_action_pressed("up"),
-			"climb"  : Input.is_action_pressed("climb"),
-			"down"   : Input.is_action_pressed("down"),
-		}
-		if input_map["climb"]:
-			if is_on_wall() and dir.x != 0:
-				climbing = true
-				speed_mod = 0.5
-				velocity.y = Input.get_axis("up", "down") * speed * speed_mod #overide the y vel
-		elif input_map["up"] and (is_on_floor() or frames_since_on_floor <= coyote_time_limit):
-			velocity.y = -jump_power
-		elif input_map["down"] and is_on_floor():
-			crouching = true
-		elif not $head/ShapeCast2D.is_colliding(): #not allow uncrouch if head is clipped
-			crouching = false
 
 func update_vel(delta):
-	# y axis
 	if not is_on_floor():
-		velocity.y += gravity * delta * gravity_mod
+		if not climbing:
+			velocity.y += gravity * delta * gravity_mod
 
-	#need to update vel after gravity for climbing so thats why it is not in get_input
-	if climbing and velocity.y == -jump_power * jump_mod:
-		if velocity.y != 0:
-			velocity.y += gravity * delta
-			if velocity.y > 0:
-				velocity.y = 0
-
-	# X axis 
 	velocity.x = dir.x * speed * speed_mod
 
 func _physics_process(delta: float) -> void:
 	new_input(delta)
 	update_timers()
-	frames_since_on_floor = 0 if is_on_floor() or climbing else frames_since_on_floor+1 #update frames since on floor
+	frames_since_on_floor = 0 if is_on_floor() else frames_since_on_floor+1
 	toggle_crouch()
-	animate() #animate based on state
-	update_vel(delta) #update the player vel
-	move_and_slide() #update position and adds delta
-	#position = Vector2i(round(position/4))*4 #make movement pixel perfect, causing issues
+	animate()
+	update_vel(delta)
+	move_and_slide()
 	
-	
+	if wall_jump_cooldown > 0:
+		wall_jump_cooldown -= 1
+
+
 #camera values:
 # left: 0
 # bottom: 736
