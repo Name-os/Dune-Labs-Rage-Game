@@ -475,8 +475,9 @@ script = ExtResource("1_g2els")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=811242530]
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_qfm1y")
-animation = &"idle_to_sit"
+animation = &"sleeping"
 autoplay = "idle"
+frame_progress = 0.78480095
 
 [node name="body" type="CollisionShape2D" parent="." unique_id=1781272868]
 position = Vector2(1, 12)
