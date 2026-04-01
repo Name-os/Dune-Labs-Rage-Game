@@ -82,6 +82,30 @@ func update_stamina(delta):
 func force_state_update():
 	pass
 
+func climb(im):
+	if stamina <= 0:
+		climbing = false
+		return
+		
+	climbing = true
+	speed_mod = mod_values["climb"]
+
+	if im["jump"]:
+		climbing = false
+		wall_jump_cooldown = 15
+		# if stamina is not enough the scale with ratio
+		stamina -= stamina_cost_wall_jump
+		stamina = max(stamina, 0)
+		# calculate jump height based on stamina
+		var ratio = min(1.0, stamina / stamina_cost_wall_jump)
+		# apply velocity
+		velocity.x = dir.x * speed if dir.x else velocity.x
+		velocity.y = -jump_power * ratio
+	elif dir.y:
+		climbing_moving = true
+		velocity.y = speed * dir.y
+	else:
+		velocity.y = 0
 func get_input():
 	gravity_mod = 1.0
 	climbing_moving = false
@@ -99,35 +123,7 @@ func get_input():
 	}
 
 	if im["climb"] and $body/ShapeCast2D.is_colliding() and wall_jump_cooldown <= 0:
-		if stamina > 0:
-			climbing = true
-			speed_mod = mod_values["climb"]
-
-			if im["jump"]:
-				climbing = false
-				wall_jump_cooldown = 15
-				# calculate jump height based on stamina
-				var ratio = stamina / stamina_cost_wall_jump
-				if ratio > 1.0:
-					ratio = 1.0
-				# if stamina is not enough the scale with ratio
-				stamina -= stamina_cost_wall_jump
-				if stamina < 0:
-					stamina = 0
-				# apply velocity
-				if dir.x:
-					velocity.x = dir.x * speed
-					velocity.y = -jump_power * ratio
-				else:
-					velocity.y = -jump_power * ratio
-			elif dir.y:
-				climbing_moving = true
-				velocity.y = speed * dir.y
-			else:
-				velocity.y = 0
-		else:
-			climbing = false
-
+		climb(im)
 	elif im["jump"] and (is_on_floor() or frames_since_on_floor <= coyote_time_limit):
 		velocity.y = -jump_power
 	elif im["down"] and is_on_floor() and not im["climb"]:
@@ -149,7 +145,7 @@ func _physics_process(delta: float) -> void:
 	animate()
 	update_vel(delta)
 	move_and_slide()
-	position = Vector2i(round(position / 4)) * 4
+	#position = Vector2i(round(position / 4)) * 4
 
 	if wall_jump_cooldown > 0:
 		wall_jump_cooldown -= 1
