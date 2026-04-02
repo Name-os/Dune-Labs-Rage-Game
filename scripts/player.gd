@@ -44,30 +44,27 @@ func animate():
 	elif $timers/sit.is_stopped():
 		animation = "sitting"
 	elif crouching:
-		animation = "crouching_running" if dir.x else "crouching_idle"
+		animation = "crouching_running" if dir.x and not $body/ShapeCast2D.is_colliding() else "crouching_idle"
 	elif climbing:
 		animation = "climbing"
 	elif not is_on_floor():
-		animation = "in_air_up" if velocity.y < 1 else "in_air_down"
+		animation = "in_air_up" if velocity.y < 1 and not $body/ShapeCast2D.is_colliding() else "in_air_down"
 	else:
-		animation = "running" if dir.x else "idle"
+		animation = "running" if dir.x and not $body/ShapeCast2D.is_colliding() else "idle"
 		
 	$AnimatedSprite2D.flip_h = dir.x < 0 if dir.x != 0 else $AnimatedSprite2D.flip_h
 	$AnimatedSprite2D.play(animation)
 
 func toggle_crouch():
 	$head.disabled = crouching
-	if crouching:
-		speed_mod = mod_values["crouching"]
-	elif not climbing:
-		speed_mod = 1.0
+	speed_mod = mod_values["crouching"] if crouching else 1.0
 	$head.position.x = (-1.0 if dir.x < 0 else 3.0) if dir.x != 0 else $head.position.x
 
 func update_timers():
-	if not dir and not climbing:
+	if dir or climbing:
 		$timers/sit.start()
 		$timers/sleep.start()
-
+	
 func update_stamina(delta):
 	if is_on_floor():
 		stamina = stamina_max
@@ -121,7 +118,9 @@ func get_input():
 	if wall_jump_cooldown <= 0:
 		climbing = false
 
-	dir = Input.get_vector("left", "right", "up", "down")
+	dir.x = Input.get_axis("left", "right")
+	dir.y = Input.get_axis("up", "down")
+	
 	var im = {
 		"up"    : Input.is_action_pressed("up"),
 		"down"  : Input.is_action_pressed("down"),
@@ -129,14 +128,13 @@ func get_input():
 		"jump"  : Input.is_action_just_pressed("jump")
 	}
 
-	if im["climb"] and $body/ShapeCast2D.is_colliding() and wall_jump_cooldown <= 0:
+	if im["climb"] and $body/ShapeCast2D.is_colliding() and wall_jump_cooldown <= 0 and not $head/ShapeCast2D.is_colliding():
 		climb(im)
 	elif not $head/ShapeCast2D.is_colliding(): #make so cant do things while head is clipped
-		crouching = false
 		if im["jump"] and (is_on_floor() or frames_since_on_floor <= coyote_time_limit):
 			velocity.y = -jump_power
-		elif im["down"] and is_on_floor() and not im["climb"]:
-			crouching = true
+		else:
+			crouching = im["down"] and is_on_floor() and not im["climb"]
 
 func update_vel(delta):
 	if not is_on_floor() and not climbing:
