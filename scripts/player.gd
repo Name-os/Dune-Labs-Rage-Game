@@ -5,9 +5,10 @@ extends CharacterBody2D
 @export var jump_power := 500
 
 #movement
-var dir         := Vector2()
-var speed_mod   := 1.0
-var gravity_mod := 1.0
+var dir                 := Vector2()
+var speed_mod           := 1.0
+var gravity_mod         := 1.0
+var velocity_last_frame := Vector2.ZERO
 
 #stamina costs
 var stamina_max            := 100.0
@@ -21,13 +22,23 @@ var crouching           := false
 var climbing            := false
 var climbing_moving     := false
 var allow_input         := true
+var was_on_floor        := false
+
+#transition frame timers
+var land_frames   := 0
+var jump_frames   := 0
+var land_duration := 13
+var jump_duration := 3
+
+#heavy landing threshold
+var land_velocity_threshold := 800.0
 
 #coyote time
 var frames_since_on_floor := 0
 var coyote_time_limit     := 4
 
 #wall jump cooldown
-var wall_jump_cooldown := 0 #jerry tweak this value a bit please
+var wall_jump_cooldown := 10
 
 var mod_values = {
 	"crouching" : 0.6,
@@ -47,8 +58,29 @@ func animate():
 		animation = "crouching_running" if dir.x and not $body/ShapeCast2D.is_colliding() else "crouching_idle"
 	elif climbing:
 		animation = "climbing"
+	elif land_frames > 0:
+		$AnimatedSprite2D.flip_h = dir.x < 0 if dir.x != 0 else $AnimatedSprite2D.flip_h
+		$AnimatedSprite2D.play("jumping")
+		$AnimatedSprite2D.pause()
+		$AnimatedSprite2D.frame = 6
+		return
+	elif jump_frames > 0:
+		$AnimatedSprite2D.flip_h = dir.x < 0 if dir.x != 0 else $AnimatedSprite2D.flip_h
+		$AnimatedSprite2D.play("jumping")
+		$AnimatedSprite2D.pause()
+		$AnimatedSprite2D.frame = 2
+		return
 	elif not is_on_floor():
-		animation = "in_air_up" if velocity.y < 1 and not $body/ShapeCast2D.is_colliding() else "in_air_down"
+		$AnimatedSprite2D.flip_h = dir.x < 0 if dir.x != 0 else $AnimatedSprite2D.flip_h
+		$AnimatedSprite2D.play("jumping")
+		$AnimatedSprite2D.pause()
+		if velocity.y < -100:
+			$AnimatedSprite2D.frame = 3
+		elif velocity.y < 0:
+			$AnimatedSprite2D.frame = 4
+		else:
+			$AnimatedSprite2D.frame = 5
+		return
 	else:
 		animation = "running" if dir.x and not $body/ShapeCast2D.is_colliding() else "idle"
 		
@@ -88,18 +120,18 @@ func climb(im):
 		return
 		
 	climbing = true
-	
 	speed_mod = mod_values["climb"]
 
 	if im["jump"]:
 		climbing = false
 		wall_jump_cooldown = 15
-		# if stamina is not enough the scale with ratio
+		jump_frames = jump_duration
 		stamina -= stamina_cost_wall_jump
-		stamina = max(stamina, 0)
-		# calculate jump height based on stamina
-		var ratio = min(1.0, stamina / stamina_cost_wall_jump)
-		# apply velocity
+		if stamina < 0:
+			stamina = 0
+		var ratio = stamina / stamina_cost_wall_jump
+		if ratio > 1.0:
+			ratio = 1.0
 		velocity.x = dir.x * speed if dir.x else velocity.x
 		velocity.y = -jump_power * ratio
 	elif dir.y:
@@ -130,18 +162,25 @@ func get_input():
 
 	if im["climb"] and $body/ShapeCast2D.is_colliding() and wall_jump_cooldown <= 0 and not $head/ShapeCast2D.is_colliding():
 		climb(im)
-	elif not $head/ShapeCast2D.is_colliding(): #make so cant do things while head is clipped
+	elif not $head/ShapeCast2D.is_colliding():
 		if im["jump"] and (is_on_floor() or frames_since_on_floor <= coyote_time_limit):
 			velocity.y = -jump_power
+			jump_frames = jump_duration
 		else:
 			crouching = im["down"] and is_on_floor() and not im["climb"]
 
 func update_vel(delta):
 	if not is_on_floor() and not climbing:
 		velocity.y += gravity * delta * gravity_mod
-	velocity.x = dir.x * speed * speed_mod
+	if land_frames > 0:
+		velocity.x = 0
+	else:
+		velocity.x = dir.x * speed * speed_mod
 
 func _physics_process(delta: float) -> void:
+	if land_frames <= 0:
+		allow_input = true
+
 	frames_since_on_floor = 0 if is_on_floor() else frames_since_on_floor + 1
 	get_input()
 	force_state_update()
@@ -149,9 +188,23 @@ func _physics_process(delta: float) -> void:
 	update_timers()
 	toggle_crouch()
 	update_vel(delta)
+	velocity_last_frame = velocity
 	move_and_slide()
+
+	# detect landing right before animate so land_frames is set before animate reads it
+	if is_on_floor() and not was_on_floor:
+		if velocity_last_frame.y >= land_velocity_threshold:
+			land_frames = land_duration
+			allow_input = false
+			jump_frames = 0
+
 	animate()
-	#position = Vector2i(round(position / 4)) * 4
+	was_on_floor = is_on_floor()
+
+	if land_frames > 0:
+		land_frames -= 1
+	if jump_frames > 0:
+		jump_frames -= 1
 
 	if wall_jump_cooldown > 0:
 		wall_jump_cooldown -= 1
