@@ -1,3 +1,6 @@
+res://scenes/springshroom.tscn
 res://scenes/game.tscn
-res://scenes/player.tscn
-res://scripts/player.gd
+res://scenes/Springshroom.tscn
+res://scenes/game.tres
+res://scenes/game.gdshader
+res://scenes/foreground.gd
