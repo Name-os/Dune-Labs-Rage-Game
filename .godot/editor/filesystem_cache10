@@ -15,7 +15,7 @@ main.png::CompressedTexture2D::2331623071922391115::1774930669::1774930733::1:::
 ::res://assets/images/spritesheets/::1775073718
 ::res://assets/images/spritesheets/Cips and Relics/::1774930733
 Cip-Sheet.png::CompressedTexture2D::2864714953562850067::1774930669::1774930733::1::::<><><>0<>0<>9bcfcd91878e9436567cc0fd8361ac16<>res://.godot/imported/Cip-Sheet.png-e6fe3341f9ef307b4a17d40c7c6b6bc1.ctex::
-::res://assets/images/spritesheets/Enemies/::1775264204
+::res://assets/images/spritesheets/Enemies/::1775265458
 Blue Firefly Glow.png::CompressedTexture2D::5908505480804440803::1774930669::1774930733::1::::<><><>0<>0<>522289e0b0a23234af0c6d1dc6fd79a7<>res://.godot/imported/Blue Firefly Glow.png-834ee8a44ed6398d0d01316bb9e86e99.ctex::
 Blue Firefly-Sheet.png::CompressedTexture2D::6801448106726825240::1774930669::1774930733::1::::<><><>0<>0<>917624e86c8074715e1579be00ebf2f6<>res://.godot/imported/Blue Firefly-Sheet.png-9db433612d0ef71a05a64f12566a4b87.ctex::
 Fireflies 2-Sheet.png::CompressedTexture2D::6853594451329622555::1774930669::1774930733::1::::<><><>0<>0<>104e092c8d2d448cd0a3abe71dad7d8b<>res://.godot/imported/Fireflies 2-Sheet.png-a35fa775ed274f291341cc28f662edfc.ctex::
@@ -23,6 +23,7 @@ Fireflies 3-Sheet.png::CompressedTexture2D::5071968974137197260::1774930669::177
 Firefly Light.png::CompressedTexture2D::2353792882361832799::1774930669::1774930733::1::::<><><>0<>0<>09eeef88f126d66ee12832882249a801<>res://.godot/imported/Firefly Light.png-fda69bc980169ece4d78c79ccbcec172.ctex::
 shade Idle-Sheet.png::CompressedTexture2D::582244685525828203::1774930669::1774930733::1::::<><><>0<>0<>81044335b0de23477c516f3cbcd3ba8c<>res://.godot/imported/shade Idle-Sheet.png-6d7def295a2fbf74d0b8d769277859f9.ctex::
 Shade Running-Sheet.png::CompressedTexture2D::3766685774688617949::1774930669::1774930733::1::::<><><>0<>0<>4bf724cac6f14bf0987ee570b599b48c<>res://.godot/imported/Shade Running-Sheet.png-a94c84bff543bba2d1f0275cbe1b45a8.ctex::
+Shrub Turn-Sheet.png::CompressedTexture2D::1966430328670920885::1775265458::1775265459::1::::<><><>0<>0<>673e1caf854bf3df0b4121dbb56ee202<>res://.godot/imported/Shrub Turn-Sheet.png-68c0b5c91dd60b4bbdf97facb354e7ea.ctex::
 Shrub-Sheet.png::CompressedTexture2D::8698655967108935829::1775264204::1775264204::1::::<><><>0<>0<>55c4f2d02ea7e13bc4664a5c64004209<>res://.godot/imported/Shrub-Sheet.png-35c5e94441c7c9fb184382ad8d7c4d2d.ctex::
 ::res://assets/images/spritesheets/other/::1775101049
 Springshroom.png::CompressedTexture2D::6752265672624201346::1775073718::1775101049::1::::<><><>0<>0<>9d725195eabf31ae75c65a9e9c1cb6b6<>res://.godot/imported/Springshroom.png-e6591f8531497a6ae6e3d55166c2f5c8.ctex::
@@ -69,12 +70,12 @@ player.tscn::PackedScene::6956040138156368862::1775247369::0::1::::<><><>0<>0<><
 shade.tscn::PackedScene::5160243334452579897::1774930669::0::1::::<><><>0<>0<><>::uid://dc0r6k866do1g::::res://scripts/shade.gd<>uid://ikbqqswesk6v::::res://assets/images/spritesheets/Enemies/shade Idle-Sheet.png<>uid://btwu08vteoqgb::::res://assets/images/spritesheets/Enemies/Shade Running-Sheet.png
 Shrub.tscn::PackedScene::2846766519813240520::1775261382::0::1::::<><><>0<>0<><>::uid://dv6xufm5tneqn::::res://assets/images/spritesheets/Enemies/Shrub-Sheet.png<>uid://cprnxvpsfh8ub::::res://scripts/shrub.gd
 Springshroom.tscn::PackedScene::8112035597576984774::1775248710::0::1::::<><><>0<>0<><>::uid://c3g33gplhp5lm::::res://assets/images/spritesheets/other/Springshroom.png<>uid://bwk0anl5hl55f::::res://scripts/springshroom.gd
-::res://scripts/::1775263861
+::res://scripts/::1775264409
 blue_fireflies.gd::GDScript::7440808455364073223::1774930669::0::1::::<>Node2D<><>0<>0<><>::
 cip.gd::GDScript::304816642457283988::1774930669::0::1::::<>Node2D<><>0<>0<><>::
 firefly.gd::GDScript::2615173951298889725::1774930669::0::1::::<>Node2D<><>0<>0<><>::
 foreground.gd::GDScript::8242601413134284601::1775251140::0::1::::<>TileMapLayer<><>0<>0<><>::
 player.gd::GDScript::8207548672509129514::1775248211::0::1::::<>CharacterBody2D<><>0<>0<><>::
 shade.gd::GDScript::7352337308357050714::1774930669::0::1::::<>CharacterBody2D<><>0<>0<><>::
-shrub.gd::GDScript::5861599964928733237::1775263861::0::1::::<>CharacterBody2D<><>0<>0<><>::
+shrub.gd::GDScript::5861599964928733237::1775264409::0::1::::<>CharacterBody2D<><>0<>0<><>::
 springshroom.gd::GDScript::3952737647258858433::1775247369::0::1::::<>AnimatedSprite2D<><>0<>0<><>::

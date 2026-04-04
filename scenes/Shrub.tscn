@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dv6xufm5tneqn" path="res://assets/images/spritesheets/Enemies/Shrub-Sheet.png" id="1_px0su"]
 [ext_resource type="Script" uid="uid://cprnxvpsfh8ub" path="res://scripts/shrub.gd" id="1_skkrm"]
+[ext_resource type="Texture2D" uid="uid://3as25fxxm7cb" path="res://assets/images/spritesheets/Enemies/Shrub Turn-Sheet.png" id="3_daj1n"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ciasn"]
 atlas = ExtResource("1_px0su")
@@ -27,6 +28,10 @@ region = Rect2(128, 0, 32, 32)
 atlas = ExtResource("1_px0su")
 region = Rect2(160, 0, 32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_xbgtm"]
+atlas = ExtResource("3_daj1n")
+region = Rect2(32, 0, 32, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_6gnl2"]
 animations = [{
 "frames": [{
@@ -51,6 +56,14 @@ animations = [{
 "loop": true,
 "name": &"default",
 "speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xbgtm")
+}],
+"loop": true,
+"name": &"shrub turn",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_briay"]
@@ -63,7 +76,8 @@ script = ExtResource("1_skkrm")
 position = Vector2(0, -9)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_6gnl2")
-frame_progress = 0.08163044
+animation = &"shrub turn"
+frame_progress = 0.8569964
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=871633760]
 position = Vector2(-2, 29)

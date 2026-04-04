@@ -2162,7 +2162,7 @@ position = Vector2(1639, 512)
 position = Vector2(720, 176)
 
 [node name="Cip 2" parent="entities" unique_id=1197060521 instance=ExtResource("9_vtaks")]
-position = Vector2(3152, 400)
+position = Vector2(3152, 368)
 
 [node name="Fireflies" parent="entities" unique_id=713168139 instance=ExtResource("9_kvpfn")]
 position = Vector2(1488, 332)
