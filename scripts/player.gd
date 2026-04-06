@@ -11,7 +11,7 @@ var gravity_mod         := 1.0
 var velocity_last_frame := Vector2.ZERO
 
 #stamina costs
-var stamina_max            := 100.0
+var stamina_max            := 1000 #large stamina value for testing
 var stamina                := stamina_max
 var stamina_drain_climb    := 18.0
 var stamina_drain_grip     := 12.0
@@ -39,6 +39,7 @@ var coyote_time_limit     := 4
 
 #wall jump cooldown
 var wall_jump_cooldown := 10
+var wall_jump_cooldown_ := 15 #not in use yet
 
 #springshroom related stuff
 var shroom_jump_radius := 40;
@@ -47,34 +48,37 @@ var springshrooms := []
 #checkpoints and teleport points
 var last_checkpoint := Vector2.ZERO
 
+#modifier values for either jumping or running
 var mod_values = {
 	"crouching" : 0.6,
 	"climb"     : 1.5,
 	"shroom_jump": 1.5,
 }
 
-func _ready():
-	shroom_jump_radius *= shroom_jump_radius #for faster distance calculations due to no need for square roots
+func _ready(): #runs on start
+#	this allows faster distance calculations as we dont need to square root but instead we need to square the value
+	shroom_jump_radius *= shroom_jump_radius
+#	make a preloaded list of springshrooms so we dont have to generate a new list every single time
 	for shroom in get_tree().get_nodes_in_group("springshroom"):
 		springshrooms.append(shroom)
-
-func _on_hurtbox_area_entered(_area: Area2D) -> void:
-	print("fergeg")
-	position = last_checkpoint
-
-func cap(value, min_val, max_val): #may be brokens
+		
+func cap(value, min_val, max_val): #may be broken
 	value = min(value, max_val) if max_val else value
 	value = max(value, min_val) if min_val else value
 	return value
 
 func animate(): #could prbly optimise
+#	flip the sprite based on direction
 	$AnimatedSprite2D.flip_h = dir.x < 0 if dir.x != 0 else $AnimatedSprite2D.flip_h
-	var animation = ""
+	
+	var animation = "" #the animation we will play
+	
 	if $timers/sleep.is_stopped():
 		animation = "sleeping"
 	elif $timers/sit.is_stopped():
 		animation = "sitting"
 	elif crouching:
+#		we are crouching but depending on if we are moving we play a different animation
 		animation = "crouching_running" if dir.x and not $body/ShapeCast2D.is_colliding() else "crouching_idle"
 	elif climbing:
 		animation = "climbing"
@@ -96,82 +100,88 @@ func animate(): #could prbly optimise
 			$AnimatedSprite2D.frame = 5
 		return
 	else:
+#		play different animation based on direction
 		animation = "running" if dir.x and not $body/ShapeCast2D.is_colliding() else "idle"
 		
-	$AnimatedSprite2D.play(animation)
+	$AnimatedSprite2D.play(animation) #play the aniamtion
 
 func toggle_crouch():
-	$head.disabled = crouching
-	speed_mod = mod_values["crouching"] if crouching else 1.0
-	$head.position.x = (-1.0 if dir.x < 0 else 3.0) if dir.x != 0 else $head.position.x
+	$head.disabled = crouching #enable or disable head hitbox so we can become smaller to crouch
+	speed_mod = mod_values["crouching"] if crouching else 1.0 #change speed to match crouching state
 
 func update_timers():
-	if dir or climbing or velocity.y != 0:
+#	these timers make us sleep or sit based on if we added input reacently
+	if dir or climbing or velocity.y != 0: #condtions to reset timers so we dont sit or sleep
 		$timers/sit.start()
 		$timers/sleep.start()
 		
-	#for timer debugging		
+	#for timer debugging
 	#print(str($timers/sit.time_left) + "   " + str($timers/sleep.time_left))
 	
 func update_stamina(delta):
-	if is_on_floor():
+	if is_on_floor(): #reset stamina when on ground
 		stamina = stamina_max
-	elif climbing:
-		if climbing_moving:
-			stamina -= stamina_drain_climb * delta
-		else:
-			stamina -= stamina_drain_grip * delta
-			
+	elif climbing: #stamina for climbing
+#		choose which amount of stamina do deduct, grip or climb
+		stamina -= (stamina_drain_climb if climbing_moving else stamina_drain_grip) * delta
+		
+		#cap the stamina at min 0
 		stamina = cap(stamina, 0, null) #may be broken
 
 func force_state_update():
-	if not is_on_floor():
+	if not is_on_floor(): #force crouching to be off when not on ground
 		crouching = false
-	if climbing and crouching:
+	if climbing and crouching: #cant have both states active at the same time
 		push_error("2 states are active at the same time")
 
 func climb(im):
-	if stamina <= 0:
+#	cant climb if stamina is below or equal to 0
+	if stamina < 1:
 		climbing = false
 		return
 		
-	climbing = true
-	speed_mod = mod_values["climb"]
+	climbing = true #we are climbing
+	speed_mod = mod_values["climb"] #modify speed on wall
+ 
+	if im["jump"]: #if we jump on wall
+		climbing = false #make no longer climbing as if not going off wall they can just stick back
+		wall_jump_cooldown = 15 #make a jump cooldown in frames
+		jump_frames = jump_duration #idk
+		stamina -= stamina_cost_wall_jump #reduce stamina by correct amount
+		stamina = cap(stamina, 0, null) #cap stamina at min 0
 
-	if im["jump"]:
-		climbing = false
-		wall_jump_cooldown = 15
-		jump_frames = jump_duration
-		stamina -= stamina_cost_wall_jump
-		stamina = cap(stamina, 0, null) #may be broken
+#		the less stamina the less of a jump, so ratio
+		var ratio = cap(stamina / stamina_cost_wall_jump, null, 1.0) #cap ratio at max 1.0
 
-		var ratio = cap(stamina / stamina_cost_wall_jump, null, 1.0) #may be broken
-
-		velocity.x = dir.x * speed if dir.x else velocity.x
-		velocity.y = -jump_power * ratio
-	elif dir.y:
-		climbing_moving = true
-		velocity.y = speed * dir.y
+		#velocity.x = dir.x * speed if dir.x else velocity.x #redundant but here for now
+		velocity.y = -jump_power * ratio #jump with correct ratio
+	elif dir.y: #going up or down with no jump
+		climbing_moving = true #we are moving
+		velocity.y = speed * dir.y #move correctly
 	else:
-		velocity.y = 0
+		velocity.y = 0 #we aren't moving
 		
 func get_input():
-	#experimental
+	#for testing
 	if Input.is_action_just_pressed("checkpoint"):
 		last_checkpoint = position
 	
-	if not allow_input:
+	if not allow_input: #if not input dont allow
 		return
-	gravity_mod = 1.0
-	climbing_moving = false
-	if not is_on_floor():
-		crouching = false
-	if wall_jump_cooldown <= 0:
-		climbing = false
+		
+	#default values
+	gravity_mod = 1.0 #modifier for gravity
+	climbing_moving = false #if we moving while climbing
+	crouching = false if not is_on_floor() else crouching #not allow crouching if not on ground
+	climbing = false if wall_jump_cooldown < 1 else climbing #not allow climbing if cooldown is active
 
+	#get axis but no normalization
 	dir.x = Input.get_axis("left", "right")
 	dir.y = Input.get_axis("up", "down")
+	#change head position based on movement
+	$head.position.x = (-1.0 if dir.x < 0 else 3.0) if dir.x != 0 else $head.position.x #move head to the right position
 	
+#	create a movement map
 	var im = {
 		"up"    : Input.is_action_pressed("up"),
 		"down"  : Input.is_action_pressed("down"),
@@ -206,17 +216,16 @@ func update_vel(delta):
 	if $hitbox.is_colliding():
 		position = last_checkpoint
 
-
 func _physics_process(delta: float) -> void:	
 	if land_frames <= 0:
 		allow_input = true
 
 	frames_since_on_floor = 0 if is_on_floor() else frames_since_on_floor + 1
 	get_input()
-	force_state_update()
 	update_stamina(delta)
 	update_timers()
 	toggle_crouch()
+	force_state_update()
 	update_vel(delta)
 	velocity_last_frame = velocity
 	move_and_slide()
