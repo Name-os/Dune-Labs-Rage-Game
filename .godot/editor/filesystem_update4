@@ -1,4 +1,1 @@
-res://scenes/player.tscn
-res://scenes/game.gdshader
 res://scripts/player.gd
-res://scenes/game.tscn
