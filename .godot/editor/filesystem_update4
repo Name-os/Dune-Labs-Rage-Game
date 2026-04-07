@@ -1,5 +1,3 @@
 res://scenes/player.tscn
 res://scenes/game.gdshader
 res://scripts/player.gd
-res://scenes/Shrub.tscn
-res://scenes/game.tscn

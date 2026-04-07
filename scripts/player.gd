@@ -11,7 +11,7 @@ var gravity_mod         := 1.0
 var velocity_last_frame := Vector2.ZERO #idk what for
 
 #stamina costs
-var stamina_max            := 1000000 #large stamina value for testing
+var stamina_max            := 100.0 #large stamina value for testing
 var stamina                := stamina_max
 var stamina_drain_climb    := 18.0 #stamina drain while climbing walls
 var stamina_drain_grip     := 12.0 #stamina drain while just griping stationaty on wall
@@ -38,7 +38,7 @@ var coyote_time_limit     := 4 #how many frames tolerance we get to jump (coyote
 
 #wall jump cooldown
 var wall_jump_cooldown       := 10 #how much longer before we get to wall jump again
-var wall_jump_cooldown_time := 0 #how much frames we cant wall jump for (cooldown)
+var wall_jump_cooldown_time := 15 #how much frames we cant wall jump for (cooldown)
 
 #time based jump
 #the longer the the jump is held, the higher the jump
@@ -171,21 +171,22 @@ func get_input():
 	if Input.is_action_just_pressed("checkpoint"):
 		last_checkpoint = position
 	
-	if not allow_input: #if not input dont allow
-		return
-		
 	#default values
 	gravity_mod = 1.0 #modifier for gravity
 	climbing_moving = false #if we moving while climbing
 	crouching = false if not is_on_floor() else crouching #not allow crouching if not on ground
 	climbing = false if wall_jump_cooldown < 1 else climbing #not allow climbing if cooldown is active
-
+	
+	#block or not block input
+	if not allow_input:
+		return
+	
 	#get axis but no normalization as we dont want speed decrease
 	dir.x = Input.get_axis("left", "right")
 	dir.y = Input.get_axis("up", "down")
 	#change head position based on movement
-	$head.position.x = (-1.0 if dir.x < 0 else 3.0) if dir.x != 0 else $head.position.x #move head to the right position
-	
+	$head.position.x = (-1.0 if dir.x < 0 else 3.0) if dir.x != 0 else $head.position.x #move head to the right positionc
+
 #	create a hashmap with the input values
 	var im = {
 		"up"          : Input.is_action_pressed("up"),
@@ -193,36 +194,36 @@ func get_input():
 		"climb"       : Input.is_action_pressed("climb"),
 		"jump"        : Input.is_action_pressed("jump"),
 	}		
-	
-#	if we are holding climb, is touching wall, wall jump cooldown is done, and head is not clipped
-	if im["climb"] and $body/ShapeCast2D.is_colliding() and wall_jump_cooldown < 1 and not $head/ShapeCast2D.is_colliding():
-		climb(im) #climb as it is very big
-	elif not $head/ShapeCast2D.is_colliding(): #dont allow certain things if head is clipped
-		if im["jump"] or velocity.y > 0: #check if we jumped or we are going down
-			for shroom in springshrooms: #could optimise using different nodes #springshroom jumping
-#				if our distance is within a certain radius we jump
-				if position.distance_squared_to(shroom.position) <= shroom_jump_radius:
-					velocity.y = -jump_power * mod_values["shroom_jump"] #apply mod with jump
-					shroom.play("spring") #play animation
-					return #break out
-		
-		var coyote_cond = frames_since_on_floor <= coyote_time_limit
-		var jump_time_cond = current_jump_time <= max_jump_time
-		
-		if im["jump"] and not jump_pressed_last_frame and (is_on_floor() or coyote_cond):
-			velocity.y = -jump_power #jump
-			jump_frames = jump_duration #may need to add to shroom bit
-			jump_pressed_last_frame = true
-		elif im["jump"] and jump_time_cond and jump_pressed_last_frame:
-			velocity.y = -jump_power #jump
-			jump_frames = jump_duration #may need to add to shroom bit
-			jump_pressed_last_frame = true
-			current_jump_time += 1
+
+	if not $head/ShapeCast2D.is_colliding():
+		if im["climb"] and wall_jump_cooldown<1 and $body/ShapeCast2D.is_colliding():
+			climb(im)
+		elif im["jump"]:
+			if velocity.y > 0:
+				for shroom in springshrooms: #could optimise using different nodes #springshroom jumping
+	#				if our distance is within a certain radius we jump
+					if position.distance_squared_to(shroom.position) <= shroom_jump_radius:
+						velocity.y = -jump_power * mod_values["shroom_jump"] #apply mod with jump
+						shroom.play("spring") #play animation
+						return #break out
+			else:
+				var coyote_cond = frames_since_on_floor <= coyote_time_limit
+				var jump_time_cond = current_jump_time <= max_jump_time
+				
+				if not jump_pressed_last_frame and (is_on_floor() or coyote_cond):
+					velocity.y = -jump_power #jump
+					jump_frames = jump_duration #may need to add to shroom bit
+					jump_pressed_last_frame = true
+				elif jump_time_cond and jump_pressed_last_frame:
+					velocity.y = -jump_power #jump
+					jump_frames = jump_duration #may need to add to shroom bit
+					jump_pressed_last_frame = true
+					current_jump_time += 1
 		else:
 			crouching = im["down"] and is_on_floor() #check if croucing
 			current_jump_time = 0
 			
-		jump_pressed_last_frame = im["jump"] #update whether we put in input jump or not
+	jump_pressed_last_frame = im["jump"] #update whether we put in input jump or not
 
 func update_vel(delta):
 	if not is_on_floor() and not climbing:
