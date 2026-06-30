@@ -4,6 +4,9 @@ extends CharacterBody2D
 @export var gravity    := 1100
 @export var jump_power := 600
 
+#Take damage signal
+signal take_damage()
+
 #movement
 var dir                 := Vector2()
 var speed_mod           := 1.0
@@ -23,6 +26,7 @@ var climbing            := false
 var climbing_moving     := false #if we are moving while climbing
 var allow_input         := true
 var was_on_floor        := false #if on floor last frame
+var invincible          := false
 
 #transition frame timers
 #idk what all for
@@ -50,7 +54,7 @@ var shroom_jump_radius := 40 #the radius which we have to be for spring shroom t
 var springshrooms      := [] #all of the springshrooms in a list for optimisation
  
 #checkpoints and teleport points
-var last_checkpoint := Vector2.ZERO
+var last_checkpoint := Vector2(768, 550)
 
 #modifier values for either jumping or running
 var mod_values = {
@@ -230,6 +234,7 @@ func update_vel(delta):
 	if $hitbox.is_colliding():
 		velocity = Vector2.ZERO #reset vel so no floor clipping and no previous movement
 		position = last_checkpoint #send to last checkpoint pos
+		take_damage.emit()
 
 func _physics_process(delta: float) -> void:
 	if land_frames <= 0: #idk yet

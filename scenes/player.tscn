@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://fgt5f3ti7llv" path="res://assets/images/spritesheets/player_cat/sitting.png" id="8_ur7pv"]
 [ext_resource type="Texture2D" uid="uid://dca82xoa4wkw5" path="res://assets/images/spritesheets/player_cat/waking.png" id="10_d2wvv"]
 [ext_resource type="Texture2D" uid="uid://8hpqx8vs3188" path="res://assets/images/other/main.png" id="10_y4r1p"]
+[ext_resource type="PackedScene" uid="uid://cncojspr8cyhd" path="res://scenes/healthUI.tscn" id="13_jej6c"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cs1tg"]
 atlas = ExtResource("2_smehm")
@@ -523,3 +524,14 @@ position = Vector2(1.5, 0)
 energy = 0.9
 texture = ExtResource("10_y4r1p")
 texture_scale = 2.0
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1161287373]
+zoom = Vector2(1.5, 1.5)
+position_smoothing_speed = 100.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1847616816]
+
+[node name="Health UI" parent="CanvasLayer" unique_id=1292273175 instance=ExtResource("13_jej6c")]
+texture_filter = 1
+position = Vector2(55, 80)
+scale = Vector2(3, 3)
